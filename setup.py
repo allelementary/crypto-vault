@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='crypto-vault',
-    version='0.1.0',
+    version='0.1.0b1',
     packages=find_packages(exclude=('tests', 'tests.*')),
     package_data={'crypto_vault': ['abi.json']},
     include_package_data=True,
@@ -13,9 +13,9 @@ setup(
     author_email='allelementaryfor@gmail.com',
     url='https://github.com/allelementary/crypto-vault-off-chain',
     install_requires=[
-        'web3',
-        'cryptography',
-        'pydantic',
+        "cryptography==42.0.5",
+        "pydantic==2.6.4",
+        "web3==6.15.1",
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
