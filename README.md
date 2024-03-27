@@ -17,6 +17,7 @@ Crypto Vault is a Python library designed to securely encrypt and store secrets 
 off-chain encryption followed by on-chain storage through smart contracts, offering a robust solution for managing 
 sensitive data in blockchain applications.
 
+Currently deployed on the Polygon Mumbai testnet only.
 
 ## Requirements
 - Python 3.9^
@@ -101,3 +102,9 @@ decrypted_data = crypto_vault.decrypt(data=encrypted_data)
    - Generate encryption key
    - Encrypt data(str, int, list, dict). Params: value, key
    - Decrypt data(bytes32). Params: value, key
+
+## Crypto Vault Smart Contract
+
+The smart contract is designed to store encrypted data on-chain. It is deployed on the Polygon Mumbai testnet.
+
+[Crypto Vault Smart Contract on mumbai-polygonscan](https://mumbai.polygonscan.com/address/0x276c89d95300b11b8aceae24a2dbc4bc3bab69f5#code)
