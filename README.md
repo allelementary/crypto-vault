@@ -7,7 +7,7 @@
 
 <br/>
 <p align="center">
-<img src="./logo.webp" width="400" alt="password-store">
+<img src="./logo.webp" width="400" alt="crypto-vault">
 </p>
 <br/>
 
@@ -89,6 +89,19 @@ encrypted_data = crypto_vault.encrypt(data="secret")
 decrypted_data = crypto_vault.decrypt(data=encrypted_data)
 ```
 
-
-   
 </details>
+
+Diagram of the basic workflow:
+
+<br/>
+<p align="center">
+<img src="./store.png" alt="store-diagram">
+</p>
+<br/>
+
+<br/>
+<p align="center">
+<img src="./retrieve.png" alt="retrieve-diagram">
+</p>
+<br/>
+
