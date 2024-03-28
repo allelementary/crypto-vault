@@ -2,7 +2,6 @@ import json
 import os
 from typing import Optional
 
-from eth_typing import Address
 from web3 import Web3
 
 from crypto_vault.config import settings
@@ -14,8 +13,6 @@ class CryptoVault(Encryption):
     Store, update and retrieve on-chain data,
     including encryption, decryption and sending blockchain transactions
     """
-    contract_address: Address = settings.CONTRACT_ADDRESS
-
     def __init__(
         self, app: str, env: str, private_key: str, encryption_key: bytes, http_provider: str
     ) -> None:
@@ -24,6 +21,7 @@ class CryptoVault(Encryption):
         self.private_key = private_key
         self.encryption_key = encryption_key
         self.w3 = Web3(Web3.HTTPProvider(http_provider))
+        self.contract = self.w3.eth.contract(address=settings.CONTRACT_ADDRESS, abi=self.abi)
 
     @property
     def abi(self):
@@ -40,73 +38,53 @@ class CryptoVault(Encryption):
 
     def store(self, data: dict):
         # Get and decrypt existing data
-        contract = self.w3.eth.contract(address=self.contract_address, abi=self.abi)
         encrypted_data = self.encrypt(data=data, key=self.encryption_key)
+        try:
+            # Create a transaction
+            tx = self.contract.functions.store(
+                self.w3.to_hex(text=self.app),
+                self.w3.to_hex(text=self.env),
+                self.w3.to_hex(encrypted_data)
+            ).build_transaction(
+                {
+                    "from": self.user_address,
+                    "nonce": self.w3.eth.get_transaction_count(self.user_address),
+                    "gasPrice": self.w3.eth.gas_price,
+                }
+            )
 
-        # Create a transaction
-        tx = contract.functions.store(
-            self.w3.to_hex(text=self.app),
-            self.w3.to_hex(text=self.env),
-            self.w3.to_hex(encrypted_data)
-        ).build_transaction(
-            {
-                "from": self.user_address,
-                "nonce": self.w3.eth.get_transaction_count(self.user_address),
-                "gasPrice": self.w3.eth.gas_price,
-            }
-        )
+            # Sign and send the transaction
+            signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
+            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
 
-        # Sign and send the transaction
-        signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-
-        return tx_hash.hex()
+            return tx_hash.hex()
+        except Exception as e:
+            raise Exception(f"Error storing data: {str(e)}")
 
     def retrieve(self, value_name: Optional[str] = None) -> dict:
         """Retrieve decrypted data from the storage"""
-        # Instantiate the contract
-        contract = self.w3.eth.contract(address=self.contract_address, abi=self.abi)
-
-        # Retrieve the encrypted data from the blockchain
-        encrypted_data = contract.functions.retrieve(
-            self.w3.to_hex(text=self.app), self.w3.to_hex(text=self.env)
-        ).call({"from": self.user_address})
-
         # Decrypt the data
-        decrypted_data = self.decrypt(data=encrypted_data, key=self.encryption_key)
+        decrypted_data = self._retrieve()
         if value_name:
             return decrypted_data.get(value_name)
         return decrypted_data
 
     def update(self, data: dict):
         # Get and decrypt existing data
-        contract = self.w3.eth.contract(address=self.contract_address, abi=self.abi)
-        existing_data = contract.functions.retrieve(
-            self.w3.to_hex(text=self.app), self.w3.to_hex(text=self.env)
-        ).call(
-            {"from": self.user_address}
-        )
-        if existing_data:
-            existing_data = self.decrypt(data=existing_data, key=self.encryption_key)
-        else:
-            existing_data = {}
-
-        # Update and encrypt the data
+        existing_data = self._retrieve()
         existing_data.update(data)
-        encrypted_data = self.encrypt(data=existing_data, key=self.encryption_key)
+        # Store data
+        return self.store(data=existing_data)
 
-        # Prepare the transaction to store the combined data
-        tx_data = {
-            "from": self.user_address,
-            "nonce": self.w3.eth.get_transaction_count(self.user_address),
-            "gasPrice": self.w3.eth.gas_price,
-        }
-        tx = contract.functions.store(
-            self.w3.to_hex(text=self.app), self.w3.to_hex(text=self.env), self.w3.to_hex(encrypted_data)
-        ).build_transaction(tx_data)
-
-        # Sign and send the transaction
-        signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-
-        return tx_hash.hex()
+    def _retrieve(self) -> dict:
+        # Retrieve the encrypted data from the blockchain
+        try:
+            encrypted_data = self.contract.functions.retrieve(
+                self.w3.to_hex(text=self.app), self.w3.to_hex(text=self.env)
+            ).call({"from": self.user_address})
+            if encrypted_data:
+                # Decrypt the data
+                return self.decrypt(data=encrypted_data, key=self.encryption_key)
+            return {}
+        except Exception as e:
+            raise Exception(f"Error retrieving data: {str(e)}")
