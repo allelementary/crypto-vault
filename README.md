@@ -1,7 +1,7 @@
 # Crypto Vault
-#### Version 0.1.0
+#### Version 0.1.1
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/yourusername/crypto-vault)
+[![Version](https://img.shields.io/badge/version-0.1.1-blue.svg)](https://github.com/yourusername/crypto-vault)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
