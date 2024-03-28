@@ -5,12 +5,6 @@
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-<br/>
-<p align="center">
-<img src="./logo.webp" width="400" alt="password-store">
-</p>
-<br/>
-
 ## About
 
 Crypto Vault is a Python library designed to securely encrypt and store secrets on-chain. It facilitates 

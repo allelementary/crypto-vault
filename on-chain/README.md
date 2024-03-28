@@ -4,7 +4,7 @@
 
 Crypto Vault allows to store encrypted data on-chain
 
-Contract address at mumbai testnet: `0x276c89d95300b11b8ACEAE24a2dbc4bc3BaB69F5`
+[Crypto Vault Smart Contract on mumbai-polygonscan](https://mumbai.polygonscan.com/address/0x276c89d95300b11b8aceae24a2dbc4bc3bab69f5#code)
 
 ## Usage
 
