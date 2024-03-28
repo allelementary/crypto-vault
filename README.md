@@ -1,15 +1,9 @@
 # Crypto Vault (off-chain)
-#### Version 0.1.0
+#### Version 0.1.1
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/yourusername/crypto-vault)
+[![Version](https://img.shields.io/badge/version-0.1.1-blue.svg)](https://github.com/yourusername/crypto-vault)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-
-<br/>
-<p align="center">
-<img src="./logo.webp" width="400" alt="password-store">
-</p>
-<br/>
 
 ## About
 
